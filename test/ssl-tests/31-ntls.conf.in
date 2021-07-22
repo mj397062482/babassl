@@ -1,0 +1,123 @@
+use strict;
+use warnings;
+
+package ssltests;
+use OpenSSL::Test::Utils;
+
+our @tests = (
+
+    {
+        name => "test cipher ECC-SM2-SM4-CBC-SM3 in NTLS_UNIQUE mode, NTLS_UNIQUE test server and client all use NTLS only",
+        server => {
+            "SignCertificate" => test_run("test_sign_sm2", "server_sign.crt"),
+            "SignPrivateKey" => test_run("test_sign_sm2", "server_sign.key"),
+            "EncCertificate" => test_run("test_sign_sm2", "server_enc.crt"),
+            "EncPrivateKey" => test_run("test_sign_sm2", "server_enc.key"),
+            "Enable_ntls" => "on",
+        },
+        client => {
+            "CipherString" => "ECC-SM2-SM4-CBC-SM3",
+            "VerifyCAFile" => test_run("test_sign_sm2", "chain-ca.crt"),
+            "Enable_ntls" => "on",
+        },
+        test   => {
+            "Method" => "NTLS",
+            "ExpectedResult" => "Success",
+            "ExpectedCipher" => "ECC-SM2-SM4-CBC-SM3",
+            "ExpectedProtocol" => "NTLS",
+        },
+    },
+
+    {
+        name => "test cipher ECC-SM2-SM4-GCM-SM3 in NTLS_UNIQUE mode, NTLS_UNIQUE test server and client all use NTLS only",
+        server => {
+            "SignCertificate" => test_run("test_sign_sm2", "server_sign.crt"),
+            "SignPrivateKey" => test_run("test_sign_sm2", "server_sign.key"),
+            "EncCertificate" => test_run("test_sign_sm2", "server_enc.crt"),
+            "EncPrivateKey" => test_run("test_sign_sm2", "server_enc.key"),
+            "Enable_ntls" => "on",
+        },
+        client => {
+            "CipherString" => "ECC-SM2-SM4-GCM-SM3",
+            "VerifyCAFile" => test_run("test_sign_sm2", "chain-ca.crt"),
+            "Enable_ntls" => "on",
+        },
+        test   => {
+            "Method" => "NTLS",
+            "ExpectedResult" => "Success",
+            "ExpectedCipher" => "ECC-SM2-SM4-GCM-SM3",
+            "ExpectedProtocol" => "NTLS",
+        },
+    },
+
+    {
+        name => "test cipher ECDHE-SM2-SM4-CBC-SM3 in NTLS_UNIQUE mode",
+        server => {
+            "SignCertificate" => test_run("test_sign_sm2", "server_sign.crt"),
+            "SignPrivateKey" => test_run("test_sign_sm2", "server_sign.key"),
+            "EncCertificate" => test_run("test_sign_sm2", "server_enc.crt"),
+            "EncPrivateKey" => test_run("test_sign_sm2", "server_enc.key"),
+            "VerifyCAFile" => test_run("test_sign_sm2", "chain-ca.crt"),
+            "Enable_ntls" => "on",
+        },
+        client => {
+            "SignCertificate" => test_run("test_sign_sm2", "client_sign.crt"),
+            "SignPrivateKey" => test_run("test_sign_sm2", "client_sign.key"),
+            "EncCertificate" => test_run("test_sign_sm2", "client_enc.crt"),
+            "EncPrivateKey" => test_run("test_sign_sm2", "client_enc.key"),
+            "CipherString" => "ECDHE-SM2-SM4-CBC-SM3",
+            "VerifyCAFile" => test_run("test_sign_sm2", "chain-ca.crt"),
+            "Enable_ntls" => "on",
+        },
+        test   => {
+            "Method" => "NTLS",
+            "ExpectedResult" => "Success",
+            "ExpectedCipher" => "ECDHE-SM2-SM4-CBC-SM3",
+            "ExpectedProtocol" => "NTLS",
+        },
+    },
+
+    {
+        name => "test cipher ECDHE-SM2-SM4-GCM-SM3 in NTLS_UNIQUE mode",
+        server => {
+            "SignCertificate" => test_run("test_sign_sm2", "server_sign.crt"),
+            "SignPrivateKey" => test_run("test_sign_sm2", "server_sign.key"),
+            "EncCertificate" => test_run("test_sign_sm2", "server_enc.crt"),
+            "EncPrivateKey" => test_run("test_sign_sm2", "server_enc.key"),
+            "VerifyCAFile" => test_run("test_sign_sm2", "chain-ca.crt"),
+            "Enable_ntls" => "on",
+        },
+        client => {
+            "SignCertificate" => test_run("test_sign_sm2", "client_sign.crt"),
+            "SignPrivateKey" => test_run("test_sign_sm2", "client_sign.key"),
+            "EncCertificate" => test_run("test_sign_sm2", "client_enc.crt"),
+            "EncPrivateKey" => test_run("test_sign_sm2", "client_enc.key"),
+            "CipherString" => "ECDHE-SM2-SM4-GCM-SM3",
+            "VerifyCAFile" => test_run("test_sign_sm2", "chain-ca.crt"),
+            "Enable_ntls" => "on",
+        },
+        test   => {
+            "Method" => "NTLS",
+            "ExpectedResult" => "Success",
+            "ExpectedCipher" => "ECDHE-SM2-SM4-GCM-SM3",
+            "ExpectedProtocol" => "NTLS",
+        },
+    },
+
+    {
+        name => "test ntls client doing handshake without setting certs and pkey",
+        server => {
+            "Enable_ntls" => "on",
+        },
+        client => {
+            "CipherString" => "ECC-SM2-SM4-CBC-SM3",
+            "Enable_ntls" => "on",
+        },
+        test   => {
+            "Method" => "NTLS",
+            "ExpectedResult" => "ServerFail",
+        },
+    },
+);
+
+push @tests unless disabled("ntls") || disabled("sm2") || disabled("sm3") || disabled("sm4");
