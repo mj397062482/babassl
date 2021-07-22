@@ -86,6 +86,7 @@ static const ERR_STRING_DATA CT_str_reasons[] = {
 
 int ERR_load_CT_strings(void)
 {
+    int sss;
 #ifndef OPENSSL_NO_ERR
     if (ERR_func_error_string(CT_str_functs[0].error) == NULL) {
         ERR_load_strings_const(CT_str_functs);
